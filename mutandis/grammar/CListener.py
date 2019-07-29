@@ -1,4 +1,4 @@
-# Generated from .\ctypeswrap\grammar\C.g4 by ANTLR 4.7.2
+# Generated from E:\PyWorkspace\mutatis\mutandis\grammar\C.g4 by ANTLR 4.7.2
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .CParser import CParser
@@ -788,6 +788,15 @@ class CListener(ParseTreeListener):
 
     # Exit a parse tree produced by CParser#declarationList.
     def exitDeclarationList(self, ctx:CParser.DeclarationListContext):
+        pass
+
+
+    # Enter a parse tree produced by CParser#directive.
+    def enterDirective(self, ctx:CParser.DirectiveContext):
+        pass
+
+    # Exit a parse tree produced by CParser#directive.
+    def exitDirective(self, ctx:CParser.DirectiveContext):
         pass
 
 
