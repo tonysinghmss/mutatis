@@ -867,7 +867,7 @@ SChar
 
 
 ComplexDefine
-    :   '#' Whitespace? 'define'  ~[#]*
+    :   '#' Whitespace? 'define'  (~[\\\r\n] | '\\\\' '\r'? '\n' | '\\'. )*
     ;
          
 IncludeDirective
@@ -883,7 +883,7 @@ IfEndDirective
     ;
 
 ExtendedIfDirective
-    :   IfStartDirective  SCharSequence* ~[#]*
+    :   IfStartDirective  SCharSequence* Newline
     ;
 
 UndefDirective
