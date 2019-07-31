@@ -1,8 +1,17 @@
 from ..grammar.CParser import CParser
 from ..grammar.CVisitor import CVisitor
+from ..common.emissary import Emissary
 
-
-class CtypesVisitor(CVisitor):
+class Extractor(CVisitor):
+    def __init__(self):
+        self.emissary = None
+        self.constants = []
+        self.structs = []
+        self.typdefs = []
+        self.functions = []
+        self.macros = []
+        self.all = []
+        self.code_order = []
 
     # Visit a parse tree produced by CParser#compilationUnit.
     def visitCompilationUnit(self, ctx:CParser.CompilationUnitContext):
