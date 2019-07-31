@@ -9,6 +9,7 @@ from mutandis.grammar.CLexer import CLexer
 from mutandis.grammar.CParser import CParser
 from mutandis.grammar.CVisitor import CVisitor
 from mutandis.grammar.CListener import CListener
+from mutandis.processor.CtypesVisitor import CtypesVisitor
 
 def main(header_path):
     input_stream = FileStream(header_path)
@@ -21,7 +22,9 @@ def main(header_path):
     #     print(token.text)
     parser = CParser(token_stream)
     tree = parser.compilationUnit()
-    print(tree.getText())
+    
+    ctypes_visitr = CtypesVisitor()
+    ctypes_visitr.visit(tree)
 
 
 if __name__ == "__main__":
