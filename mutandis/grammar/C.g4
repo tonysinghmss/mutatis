@@ -883,7 +883,7 @@ IfEndDirective
     ;
 
 ExtendedIfDirective
-    :   IfStartDirective  SCharSequence* Newline
+    :   IfStartDirective  SCharSequence*
     ;
 
 UndefDirective

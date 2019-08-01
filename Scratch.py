@@ -25,7 +25,9 @@ def main(header_path):
     
     extractor = Extractor()
     extractor.visit(tree)
-
+    print("***************************")
+    for cd in extractor.cdeque:
+        print(cd)
 
 if __name__ == "__main__":
     header_file_path = os.path.join(os.path.dirname(__file__),"test.h")

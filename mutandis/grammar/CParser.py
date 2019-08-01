@@ -1,4 +1,4 @@
-# Generated from E:\PyWorkspace\mutatis\mutandis\grammar\C.g4 by ANTLR 4.7.2
+# Generated from .\mutandis\grammar\C.g4 by ANTLR 4.7.2
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
