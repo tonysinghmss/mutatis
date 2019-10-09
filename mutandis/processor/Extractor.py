@@ -1,9 +1,11 @@
 from ..grammar.CParser import CParser
 from ..grammar.CVisitor import CVisitor
 from ..common.emissary import Emissary
+from collections import deque
 
 class Extractor(CVisitor):
     def __init__(self):
+        self.cdeque = deque([])
         self.emissary = None
         self.constants = []
         self.structs = []
@@ -12,16 +14,68 @@ class Extractor(CVisitor):
         self.macros = []
         self.all = []
         self.code_order = []
+        self.translation_unit_count = 0
 
     # Visit a parse tree produced by CParser#compilationUnit.
     def visitCompilationUnit(self, ctx:CParser.CompilationUnitContext):
+        self.emissary = Emissary()
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by CParser#translationUnit.
-    def visitTranslationUnit(self, ctx:CParser.TranslationUnitContext):        
+    def visitTranslationUnit(self, ctx:CParser.TranslationUnitContext):   
+        self.translation_unit_count += 1
+        print(f'Translation Unit: {self.translation_unit_count}')  
+        print(f'{ctx.getText()}')
+        return self.visitChildren(ctx)
+        
+    # Visit a parse tree produced by CParser#externalDeclaration.
+    def visitExternalDeclaration(self, ctx:CParser.ExternalDeclarationContext):
+        _func_decl = ctx.functionDefinition()
+        if _func_decl:            
+            result = self.visitChildren(_func_decl)
+        _decl = ctx.declaration()
+        if _decl:
+            result = self.visitChildren(_decl)
+        _dirctv = ctx.directive()
+        if _dirctv:
+            result = self.visitChildren(_dirctv)
+            if not result:
+                self.cdeque.append(_dirctv.getText())
+        self.cdeque.append(result)
+        return result
+
+
+    # Visit a parse tree produced by CParser#functionDefinition.
+    def visitFunctionDefinition(self, ctx:CParser.FunctionDefinitionContext):
         return self.visitChildren(ctx)
 
+    
+    # Visit a parse tree produced by CParser#declaration.
+    def visitDeclaration(self, ctx:CParser.DeclarationContext):
+        res = []
+        _decl_spcfrs = ctx.declarationSpecifiers()
+        if _decl_spcfrs:            
+            result = self.visitChildren(_decl_spcfrs)            
+            res.append(result)
+            _init_decl = ctx.initDeclaratorList()
+            if _init_decl:
+                result = self.visitChildren(_init_decl)
+                res.append(result)
+            res.append(';')            
+            result = ' '.join(res)       
+            self.cdeque.append(result)
+        _stat_assrt_decl = ctx.staticAssertDeclaration()
+        if _stat_assrt_decl:
+            result = self.visitChildren(_stat_assrt_decl)
+            self.cdeque.append(result)
+        return result
+
+
+    # Visit a parse tree produced by CParser#declarationSpecifiers.
+    def visitDeclarationSpecifiers(self, ctx:CParser.DeclarationSpecifiersContext):
+        decl_spcfrs = ctx.declarationSpecifier()
+        return self.visitChildren(ctx)
+        
     # Visit a parse tree produced by CParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:CParser.PrimaryExpressionContext):
         return self.visitChildren(ctx)
@@ -141,15 +195,6 @@ class Extractor(CVisitor):
     def visitConstantExpression(self, ctx:CParser.ConstantExpressionContext):
         return self.visitChildren(ctx)
 
-
-    # Visit a parse tree produced by CParser#declaration.
-    def visitDeclaration(self, ctx:CParser.DeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by CParser#declarationSpecifiers.
-    def visitDeclarationSpecifiers(self, ctx:CParser.DeclarationSpecifiersContext):
-        return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by CParser#declarationSpecifiers2.
@@ -429,16 +474,6 @@ class Extractor(CVisitor):
 
     # Visit a parse tree produced by CParser#jumpStatement.
     def visitJumpStatement(self, ctx:CParser.JumpStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by CParser#externalDeclaration.
-    def visitExternalDeclaration(self, ctx:CParser.ExternalDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by CParser#functionDefinition.
-    def visitFunctionDefinition(self, ctx:CParser.FunctionDefinitionContext):
         return self.visitChildren(ctx)
 
 
