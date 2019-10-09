@@ -14,7 +14,7 @@ class Extractor(CVisitor):
         self.macros = []
         self.all = []
         self.code_order = []
-        self.translation_unit_count = 0
+        # self.translation_unit_count = 0
 
     # Visit a parse tree produced by CParser#compilationUnit.
     def visitCompilationUnit(self, ctx:CParser.CompilationUnitContext):
@@ -23,9 +23,9 @@ class Extractor(CVisitor):
 
     # Visit a parse tree produced by CParser#translationUnit.
     def visitTranslationUnit(self, ctx:CParser.TranslationUnitContext):   
-        self.translation_unit_count += 1
-        print(f'Translation Unit: {self.translation_unit_count}')  
-        print(f'{ctx.getText()}')
+        # self.translation_unit_count += 1
+        # print(f'Translation Unit: {self.translation_unit_count}')  
+        # print(f'{ctx.getText()}')
         return self.visitChildren(ctx)
         
     # Visit a parse tree produced by CParser#externalDeclaration.
@@ -72,8 +72,7 @@ class Extractor(CVisitor):
 
 
     # Visit a parse tree produced by CParser#declarationSpecifiers.
-    def visitDeclarationSpecifiers(self, ctx:CParser.DeclarationSpecifiersContext):
-        decl_spcfrs = ctx.declarationSpecifier()
+    def visitDeclarationSpecifiers(self, ctx:CParser.DeclarationSpecifiersContext): 
         return self.visitChildren(ctx)
         
     # Visit a parse tree produced by CParser#primaryExpression.
@@ -219,7 +218,8 @@ class Extractor(CVisitor):
 
     # Visit a parse tree produced by CParser#storageClassSpecifier.
     def visitStorageClassSpecifier(self, ctx:CParser.StorageClassSpecifierContext):
-        return self.visitChildren(ctx)
+        self.cdeque.append(ctx.getText())
+        return ctx.getText()
 
 
     # Visit a parse tree produced by CParser#typeSpecifier.
@@ -289,7 +289,8 @@ class Extractor(CVisitor):
 
     # Visit a parse tree produced by CParser#typeQualifier.
     def visitTypeQualifier(self, ctx:CParser.TypeQualifierContext):
-        return self.visitChildren(ctx)
+        self.cdeque.append(ctx.getText())
+        return ctx.getText()
 
 
     # Visit a parse tree produced by CParser#functionSpecifier.
